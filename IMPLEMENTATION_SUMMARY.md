@@ -8,20 +8,28 @@ Successfully implemented a comprehensive Deterministic Engineering Core for INDO
 
 ### 1. Core Architecture ✅
 
+**Data Layer** (`roadscript/data/`)
+- `idm_standards.json`: Authoritative IDM standards (source of truth)
+- Includes clear zones, geometry, and validation rules
+
 **Standards Module** (`roadscript/standards/`)
-- `idm_standards.json`: 7,197 characters of authoritative IDM standards
 - `loader.py`: Singleton pattern for efficient standards loading
-- Includes buffer strips, clear zones, geometry, and validation rules
 
 **Core Calculators** (`roadscript/core/`)
-- `buffer_strips.py`: Road classification and terrain-based calculations
 - `clear_zones.py`: Traffic volume and slope-based safety calculations
 - `geometry.py`: Horizontal curves, vertical curves, and sight distance
+- `engine.py`: Pure functions for core IDM math
 
 **Validation Layer** (`roadscript/validation/`)
 - `validators.py`: Pre-calculation input validation and post-calculation compliance checking
 - Comprehensive error messages for failed validations
 - IDM standards conformance verification
+
+**Validators** (`roadscript/validators/`)
+- `base.py`: ValidationResult and IDM 43-4.0 vertical curve checks
+
+**Utilities** (`roadscript/utils/`)
+- `audit.py`: Validation audit log with revision tags
 
 **Audit Logging** (`roadscript/logging/`)
 - `audit.py`: Professional structured logging with JSON formatting
@@ -31,27 +39,23 @@ Successfully implemented a comprehensive Deterministic Engineering Core for INDO
 ### 2. Test Coverage ✅
 
 **Test Statistics:**
-- 66 tests implemented (all passing)
-- 93% code coverage
-- Unit tests: 54 tests across 5 modules
-- Integration tests: 6 end-to-end workflow tests
-- Test execution time: < 0.5 seconds
+- Test suite implemented
+- Coverage reports available via pytest-cov
+- Unit and integration tests across core modules
 
 **Test Categories:**
-- Standards loader tests (8 tests)
-- Input validation tests (14 tests)
-- Buffer strip calculation tests (11 tests)
-- Clear zone calculation tests (11 tests)
-- Geometry calculation tests (16 tests)
-- Integration workflow tests (6 tests)
+- Standards loader tests
+- Input validation tests
+- Clear zone calculation tests
+- Geometry calculation tests
+- Vertical curve compliance tests (IDM 43-4.0)
+- Integration workflow tests
 
 ### 3. IDM Standards Database ✅
 
 **Comprehensive Coverage:**
-- Buffer Strips: 4 road classifications × 5 design speeds
-- Clear Zones: 5 design speeds × 3 slope categories × 4 ADT ranges
+- Clear Zones: 8 design speeds x foreslope/backslope categories x 4 AADT ranges
 - Geometry: Horizontal curves, vertical curves, stopping sight distance
-- Adjustment Factors: Terrain (flat, rolling, mountainous) and traffic volume
 
 **Legal Defensibility:**
 - Version tracked (2024.1)
@@ -83,7 +87,7 @@ Successfully implemented a comprehensive Deterministic Engineering Core for INDO
 ### 5. Documentation ✅
 
 **README.md:**
-- Comprehensive overview (284 lines)
+- Comprehensive overview
 - Installation instructions
 - Quick start examples
 - Architecture description
@@ -91,7 +95,7 @@ Successfully implemented a comprehensive Deterministic Engineering Core for INDO
 - Legal defensibility section
 
 **EXAMPLES.md:**
-- Complete workflow examples (6,315 characters)
+- Complete workflow examples
 - Interstate highway design
 - Local road design
 - Vertical curve design
@@ -108,39 +112,58 @@ Successfully implemented a comprehensive Deterministic Engineering Core for INDO
 
 ```
 RoadScript/
-├── roadscript/                    # Main package
-│   ├── core/                      # Calculation modules
-│   │   ├── buffer_strips.py       # Buffer strip calculations
-│   │   ├── clear_zones.py         # Clear zone calculations
-│   │   └── geometry.py            # Geometric design calculations
-│   ├── standards/                 # Standards database
-│   │   ├── idm_standards.json     # IDM standards (Source of Truth)
-│   │   └── loader.py              # Standards loader
-│   ├── validation/                # Validation layer
-│   │   └── validators.py          # Input and compliance validators
-│   └── logging/                   # Audit logging
-│       └── audit.py               # Professional audit logger
-├── tests/                         # Test suite
-│   ├── unit/                      # Unit tests (54 tests)
-│   │   ├── test_standards_loader.py
-│   │   ├── test_validators.py
-│   │   ├── test_buffer_strips.py
-│   │   ├── test_clear_zones.py
-│   │   └── test_geometry.py
-│   └── integration/               # Integration tests (6 tests)
-│       └── test_workflow.py
-├── README.md                      # Comprehensive documentation
-├── EXAMPLES.md                    # Usage examples
-├── LICENSE                        # MIT License
-├── setup.py                       # Package configuration
-├── requirements.txt               # Dependencies
-└── pytest.ini                     # Test configuration
+|-- roadscript/
+|   |-- __init__.py
+|   |-- core/
+|   |   |-- __init__.py
+|   |   |-- clear_zones.py
+|   |   |-- engine.py
+|   |   `-- geometry.py
+|   |-- data/
+|   |   |-- __init__.py
+|   |   `-- idm_standards.json
+|   |-- standards/
+|   |   |-- __init__.py
+|   |   `-- loader.py
+|   |-- validation/
+|   |   |-- __init__.py
+|   |   `-- validators.py
+|   |-- validators/
+|   |   |-- __init__.py
+|   |   `-- base.py
+|   |-- logging/
+|   |   |-- __init__.py
+|   |   `-- audit.py
+|   |-- utils/
+|   |   |-- __init__.py
+|   |   `-- audit.py
+|   `-- exceptions.py
+|-- tests/
+|   |-- __init__.py
+|   |-- test_roadscript.py
+|   |-- integration/
+|   |   |-- __init__.py
+|   |   `-- test_workflow.py
+|   `-- unit/
+|       |-- __init__.py
+|       |-- test_clear_zones.py
+|       |-- test_geometry.py
+|       |-- test_standards_loader.py
+|       `-- test_validators.py
+|-- README.md
+|-- EXAMPLES.md
+|-- IMPLEMENTATION_SUMMARY.md
+|-- LICENSE
+|-- setup.py
+|-- requirements.txt
+`-- pytest.ini
 ```
+
 
 ### 7. Performance Metrics ✅
 
 - Standards loading: Singleton pattern (load once, use many times)
-- Test execution: < 0.5 seconds for all 66 tests
+- Test execution: see pytest output for timing
 - Memory efficient: Standards cached in memory
 - No external dependencies for core functionality
 
@@ -172,7 +195,6 @@ RoadScript/
 - Safety factor considerations
 
 **Indiana Design Manual:**
-- Buffer strip requirements
 - Clear zone standards
 - Horizontal and vertical curve criteria
 - Stopping sight distance requirements
@@ -180,16 +202,14 @@ RoadScript/
 ### 10. Sample Calculations ✅
 
 **Interstate Highway (70 mph):**
-- Buffer Strip: 49.5 ft (base 45 ft × terrain 1.0 × traffic 1.1)
-- Clear Zone: 40 ft (6000+ ADT, 6:1 slope)
+- Clear Zone: 30-34 ft* (AADT >6000, foreslope 6:1 or flatter)
 - Minimum Radius: 1,150 ft
 - Stopping Sight Distance: 730 ft
 - Vertical Curve (4% grade): 988 ft (K=247)
 
-**Local Road (35 mph):**
-- Buffer Strip: 17.6 ft (base 15 ft × terrain 1.3 × traffic 0.9)
-- Clear Zone: 7 ft (0-500 ADT, 6:1 slope)
-- Minimum Radius: 200-360 ft range
+**Local Road (40 mph):**
+- Clear Zone: 7-10 ft (AADT <750, foreslope 6:1 or flatter)
+- Minimum Radius: 360 ft
 
 ## Summary
 
@@ -200,7 +220,6 @@ The implementation successfully delivers:
 ✅ Validation layer with automated pytest suites  
 ✅ Professional audit logging for legal defensibility  
 ✅ Standard of Care compliance for commercial AI design applications  
-✅ 93% code coverage with 66 passing tests  
 ✅ Comprehensive documentation and examples  
 ✅ Deterministic, reproducible calculations  
 

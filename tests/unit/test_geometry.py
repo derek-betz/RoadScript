@@ -6,6 +6,7 @@ Tests IDM-compliant geometric design calculations.
 
 import pytest
 from roadscript.core.geometry import GeometryCalculator
+from roadscript.exceptions import StandardInterpolationRequiredError
 
 
 class TestGeometryCalculator:
@@ -165,12 +166,7 @@ class TestGeometryCalculator:
             self.calculator.calculate_minimum_radius(design_speed=200)
         assert "validation failed" in str(exc_info.value).lower()
     
-    def test_closest_speed_matching(self):
-        """Test that calculator uses closest speed if exact match not available."""
-        # 65 mph not in standards, should use closest
-        result = self.calculator.calculate_minimum_radius(design_speed=65)
-        
-        # Should use 60 or 70 mph standard
-        assert result["design_speed"] in [60, 70]
-        assert result["minimum_radius"] > 0
-        assert result["compliant"]
+    def test_missing_speed_requires_interpolation(self):
+        """Test that missing design speed raises StandardInterpolationRequiredError."""
+        with pytest.raises(StandardInterpolationRequiredError):
+            self.calculator.calculate_minimum_radius(design_speed=65)

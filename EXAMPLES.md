@@ -1,49 +1,30 @@
 # Example Usage
 
-This document provides detailed examples of using RoadScript for various roadway design calculations.
+This document provides detailed examples of using RoadScript for clear zone and geometric design calculations.
 
 ## Complete Interstate Highway Design
 
 ```python
-from roadscript import (
-    BufferStripCalculator,
-    ClearZoneCalculator,
-    GeometryCalculator
-)
+from roadscript import ClearZoneCalculator, GeometryCalculator
 
 # Design parameters
 design_speed = 70  # mph
 adt = 12000  # vehicles per day
 
 # Initialize calculators
-buffer_calc = BufferStripCalculator()
 clear_zone_calc = ClearZoneCalculator()
 geom_calc = GeometryCalculator()
-
-# Calculate buffer strip
-buffer_result = buffer_calc.calculate(
-    road_classification="interstate",
-    design_speed=design_speed,
-    terrain="rolling",
-    traffic_volume="high"
-)
-
-print("Buffer Strip Analysis:")
-print(f"  Width: {buffer_result['width']} feet")
-print(f"  Base Width: {buffer_result['base_width']} feet")
-print(f"  Terrain Factor: {buffer_result['terrain_factor']}")
-print(f"  Traffic Factor: {buffer_result['traffic_factor']}")
-print(f"  Compliant: {buffer_result['compliant']}")
 
 # Calculate clear zone
 clear_zone_result = clear_zone_calc.calculate(
     design_speed=design_speed,
     adt=adt,
-    slope_category="fill_slope_6_1_or_flatter"
+    slope_position="foreslope",
+    slope_category="6_1_or_flatter"
 )
 
-print("\nClear Zone Analysis:")
-print(f"  Width: {clear_zone_result['width']} feet")
+print("Clear Zone Analysis:")
+print(f"  Range: {clear_zone_result['min_width']}-{clear_zone_result['max_width']} feet")
 print(f"  ADT Category: {clear_zone_result['adt_category']}")
 print(f"  Compliant: {clear_zone_result['compliant']}")
 
@@ -60,33 +41,28 @@ print(f"  Superelevation Max: {radius_result['superelevation_max']}")
 ## Local Road Design
 
 ```python
-from roadscript import BufferStripCalculator, ClearZoneCalculator
+from roadscript import ClearZoneCalculator, GeometryCalculator
 
 # Local road parameters
-design_speed = 35  # mph
+design_speed = 40  # mph
 adt = 500  # vehicles per day
 
-buffer_calc = BufferStripCalculator()
 clear_zone_calc = ClearZoneCalculator()
+geom_calc = GeometryCalculator()
 
-# Calculate buffer strip for local road
-buffer_result = buffer_calc.calculate(
-    road_classification="local_road",
-    design_speed=design_speed,
-    terrain="flat",
-    traffic_volume="low"
-)
-
-# Calculate clear zone (use 30 mph as closest standard)
+# Calculate clear zone (use 30 mph standard speed)
 clear_zone_result = clear_zone_calc.calculate(
     design_speed=30,
     adt=adt,
-    slope_category="fill_slope_6_1_or_flatter"
+    slope_position="foreslope",
+    slope_category="6_1_or_flatter"
 )
 
+radius_result = geom_calc.calculate_minimum_radius(design_speed=design_speed)
+
 print(f"Local Road Design (Speed: {design_speed} mph, ADT: {adt}):")
-print(f"  Buffer Strip: {buffer_result['width']} feet")
-print(f"  Clear Zone: {clear_zone_result['width']} feet")
+print(f"  Clear Zone: {clear_zone_result['min_width']}-{clear_zone_result['max_width']} feet")
+print(f"  Minimum Radius: {radius_result['minimum_radius']} feet")
 ```
 
 ## Vertical Curve Design
@@ -130,31 +106,33 @@ print(f"  K Value: {sag_result['k_value']}")
 ## Validation and Error Handling
 
 ```python
-from roadscript import BufferStripCalculator, InputValidator
+from roadscript import ClearZoneCalculator, InputValidator
 
 validator = InputValidator()
-calculator = BufferStripCalculator()
+calculator = ClearZoneCalculator()
 
 # Example 1: Valid inputs
 inputs = {
-    "road_classification": "state_highway",
-    "design_speed": 50,
-    "terrain": "mountainous"
+    "design_speed": 60,
+    "adt": 5000,
+    "slope_position": "foreslope",
+    "slope_category": "6_1_or_flatter"
 }
 
-is_valid, errors = validator.validate_buffer_strip_inputs(inputs)
+is_valid, errors = validator.validate_clear_zone_inputs(inputs)
 if is_valid:
     result = calculator.calculate(**inputs)
-    print(f"Calculation successful: {result['width']} feet")
+    print(f"Calculation successful: {result['min_width']}-{result['max_width']} feet")
 else:
     print(f"Validation errors: {errors}")
 
 # Example 2: Invalid inputs
 try:
     result = calculator.calculate(
-        road_classification="invalid_type",
-        design_speed=50,
-        terrain="flat"
+        design_speed=60,
+        adt=5000,
+        slope_position="foreslope",
+        slope_category="invalid_slope"
     )
 except ValueError as e:
     print(f"Calculation failed: {e}")
@@ -163,29 +141,30 @@ except ValueError as e:
 ## Compliance Checking
 
 ```python
-from roadscript import BufferStripCalculator, ComplianceChecker
+from roadscript import ClearZoneCalculator, ComplianceChecker
 
-calculator = BufferStripCalculator()
+calculator = ClearZoneCalculator()
 compliance = ComplianceChecker()
 
-# Calculate buffer strip
+# Calculate clear zone
 result = calculator.calculate(
-    road_classification="interstate",
-    design_speed=65,
-    terrain="flat",
-    traffic_volume="medium"
+    design_speed=60,
+    adt=5000,
+    slope_position="foreslope",
+    slope_category="6_1_or_flatter"
 )
 
 # Check compliance
 inputs = {
-    "road_classification": "interstate",
-    "design_speed": 65,
-    "terrain": "flat"
+    "design_speed": 60,
+    "adt": 5000,
+    "slope_position": "foreslope",
+    "slope_category": "6_1_or_flatter"
 }
 
-is_compliant, issues = compliance.check_buffer_strip_compliance(
+is_compliant, issues = compliance.check_clear_zone_compliance(
     inputs,
-    result["width"]
+    {"min": result["min_width"], "max": result["max_width"]}
 )
 
 if is_compliant:
@@ -205,10 +184,10 @@ calculator = ClearZoneCalculator()
 
 # Multiple design scenarios
 scenarios = [
-    {"speed": 30, "adt": 400, "slope": "fill_slope_6_1_or_flatter"},
-    {"speed": 50, "adt": 2000, "slope": "fill_slope_6_1_or_flatter"},
-    {"speed": 60, "adt": 5000, "slope": "fill_slope_5_1_to_4_1"},
-    {"speed": 70, "adt": 10000, "slope": "fill_slope_3_1_or_steeper"},
+    {"speed": 30, "adt": 400, "slope_position": "foreslope", "slope": "6_1_or_flatter"},
+    {"speed": 50, "adt": 2000, "slope_position": "foreslope", "slope": "6_1_or_flatter"},
+    {"speed": 60, "adt": 5000, "slope_position": "foreslope", "slope": "5_1_or_4_1"},
+    {"speed": 70, "adt": 10000, "slope_position": "backslope", "slope": "4_1_or_5_1"},
 ]
 
 print("Clear Zone Width Analysis:")
@@ -217,10 +196,11 @@ for scenario in scenarios:
     result = calculator.calculate(
         design_speed=scenario["speed"],
         adt=scenario["adt"],
+        slope_position=scenario["slope_position"],
         slope_category=scenario["slope"]
     )
     print(f"Speed: {scenario['speed']} mph, ADT: {scenario['adt']}")
-    print(f"  Width: {result['width']} feet ({result['adt_category']})")
+    print(f"  Range: {result['min_width']}-{result['max_width']} feet ({result['adt_category']})")
     print()
 ```
 

@@ -67,7 +67,7 @@ class AuditLogger:
         Log a calculation with full audit trail.
         
         Args:
-            calculation_type: Type of calculation (e.g., "buffer_strip", "clear_zone")
+            calculation_type: Type of calculation (e.g., "clear_zone", "geometry")
             inputs: Input parameters used in calculation
             outputs: Calculated results
             standards_version: Version of standards used

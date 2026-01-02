@@ -4,7 +4,6 @@ Unit tests for Standards Loader
 Tests the JSON-based "Source of Truth" loading and access.
 """
 
-import pytest
 from roadscript.standards.loader import StandardsLoader
 
 
@@ -24,20 +23,9 @@ class TestStandardsLoader:
         
         assert isinstance(standards, dict)
         assert "metadata" in standards
-        assert "buffer_strips" in standards
         assert "clear_zones" in standards
         assert "geometry" in standards
         assert "validation_rules" in standards
-    
-    def test_get_buffer_strip_standards(self):
-        """Test getting buffer strip standards."""
-        loader = StandardsLoader()
-        buffer_standards = loader.get_buffer_strip_standards()
-        
-        assert isinstance(buffer_standards, dict)
-        assert "description" in buffer_standards
-        assert "standards" in buffer_standards
-        assert "adjustment_factors" in buffer_standards
     
     def test_get_clear_zone_standards(self):
         """Test getting clear zone standards."""
@@ -63,7 +51,6 @@ class TestStandardsLoader:
         rules = loader.get_validation_rules()
         
         assert isinstance(rules, dict)
-        assert "buffer_strips" in rules
         assert "clear_zones" in rules
         assert "geometry" in rules
     
@@ -81,13 +68,6 @@ class TestStandardsLoader:
         """Test that standards have expected structure."""
         loader = StandardsLoader()
         standards = loader.get_standards()
-        
-        # Check buffer strips structure
-        buffer_strips = standards["buffer_strips"]
-        assert "interstate" in buffer_strips["standards"]
-        assert "us_route" in buffer_strips["standards"]
-        assert "state_highway" in buffer_strips["standards"]
-        assert "local_road" in buffer_strips["standards"]
         
         # Check clear zones structure
         clear_zones = standards["clear_zones"]

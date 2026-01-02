@@ -5,11 +5,11 @@ Calculates geometric design parameters including minimum horizontal curve radius
 vertical curve length, stopping sight distance, and superelevation.
 """
 
-import math
-from typing import Dict, Any
+from typing import Dict, List, Any
 from roadscript.standards.loader import StandardsLoader
 from roadscript.validation.validators import InputValidator, ComplianceChecker
 from roadscript.logging.audit import get_audit_logger
+from roadscript.exceptions import StandardInterpolationRequiredError
 
 
 class GeometryCalculator:
@@ -49,6 +49,10 @@ class GeometryCalculator:
                 - friction_factor: Side friction factor
                 - compliant: Whether result meets IDM standards
                 - warnings: List of any compliance warnings
+                
+        Raises:
+            ValueError: If inputs fail validation
+            StandardInterpolationRequiredError: If design speed is not in IDM standards
         """
         # Prepare inputs
         inputs = {"design_speed": design_speed}
@@ -72,11 +76,14 @@ class GeometryCalculator:
         speed_key = str(design_speed)
         radius_table = curve_standards["design_speed_radius"]
         
-        # Find radius (use closest speed if exact match not found)
+        # Find radius (exact match required)
         if speed_key not in radius_table:
-            available_speeds = sorted([int(s) for s in radius_table.keys()])
-            closest_speed = min(available_speeds, key=lambda x: abs(x - design_speed))
-            speed_key = str(closest_speed)
+            available_speeds: List[int] = sorted(int(speed) for speed in radius_table.keys())
+            raise StandardInterpolationRequiredError(
+                "Design speed "
+                f"{design_speed} mph not found in IDM geometry standards. "
+                f"Available speeds: {available_speeds}"
+            )
         
         minimum_radius = radius_table[speed_key]
         e_max = curve_standards["superelevation_max"]
@@ -122,7 +129,7 @@ class GeometryCalculator:
         curve_type: str = "crest"
     ) -> Dict[str, Any]:
         """
-        Calculate minimum vertical curve length.
+        Calculate minimum vertical curve length per IDM 43-4.0.
         
         Args:
             design_speed: Design speed in mph
@@ -138,6 +145,10 @@ class GeometryCalculator:
                 - curve_type: Type of curve
                 - compliant: Whether result meets IDM standards
                 - warnings: List of any compliance warnings
+                
+        Raises:
+            ValueError: If inputs fail validation
+            StandardInterpolationRequiredError: If design speed is not in IDM 43-4.0 K-values
         """
         # Prepare inputs
         inputs = {
@@ -168,11 +179,14 @@ class GeometryCalculator:
         else:
             k_values = vert_curve_standards["sag_curves"]["K_values"]
         
-        # Find K value (use closest speed if exact match not found)
+        # Find K value (exact match required)
         if speed_key not in k_values:
-            available_speeds = sorted([int(s) for s in k_values.keys()])
-            closest_speed = min(available_speeds, key=lambda x: abs(x - design_speed))
-            speed_key = str(closest_speed)
+            available_speeds: List[int] = sorted(int(speed) for speed in k_values.keys())
+            raise StandardInterpolationRequiredError(
+                "Design speed "
+                f"{design_speed} mph not found in IDM 43-4.0 K-values. "
+                f"Available speeds: {available_speeds}"
+            )
         
         k_value = k_values[speed_key]
         
@@ -215,7 +229,7 @@ class GeometryCalculator:
     
     def calculate_stopping_sight_distance(self, design_speed: int) -> Dict[str, Any]:
         """
-        Calculate stopping sight distance for a given design speed.
+        Calculate stopping sight distance per IDM 43-4.0.
         
         Args:
             design_speed: Design speed in mph
@@ -226,6 +240,10 @@ class GeometryCalculator:
                 - design_speed: Design speed used
                 - compliant: Whether result meets IDM standards
                 - warnings: List of any compliance warnings
+                
+        Raises:
+            ValueError: If inputs fail validation
+            StandardInterpolationRequiredError: If design speed is not in IDM SSD standards
         """
         # Prepare inputs
         inputs = {"design_speed": design_speed}
@@ -248,9 +266,12 @@ class GeometryCalculator:
         # Get SSD
         speed_key = str(design_speed)
         if speed_key not in ssd_table:
-            available_speeds = sorted([int(s) for s in ssd_table.keys()])
-            closest_speed = min(available_speeds, key=lambda x: abs(x - design_speed))
-            speed_key = str(closest_speed)
+            available_speeds: List[int] = sorted(int(speed) for speed in ssd_table.keys())
+            raise StandardInterpolationRequiredError(
+                "Design speed "
+                f"{design_speed} mph not found in IDM SSD standards. "
+                f"Available speeds: {available_speeds}"
+            )
         
         ssd = ssd_table[speed_key]
         

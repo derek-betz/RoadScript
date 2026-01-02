@@ -1,0 +1,1056 @@
+{
+  "metadata": {
+    "version": "2024.1",
+    "revision_tag": "IDM_2024_v1",
+    "authority": "Indiana Design Manual (IDM)",
+    "last_updated": "2024-01-01",
+    "description": "IDM-compliant standards for roadway design calculations",
+    "legal_notice": "These standards are derived from the Indiana Design Manual and are maintained for legal defensibility and Standard of Care compliance."
+  },
+  "clear_zones": {
+    "description": "Clear zone width requirements for roadside safety",
+    "units": "feet",
+    "reference": "IDM Figure 49-2A",
+    "idm_reference": "IDM 49-2.02 Figure 49-2A",
+    "notes": {
+      "asterisk": "A clear-zone distance greater than shown may be provided based on site-specific investigation; clear-zone width may be limited to 30 ft for practicality.",
+      "foreslope_3_1": "For a foreslope of 3:1, recovery is less likely if it is unshielded and fixed objects should not be present."
+    },
+    "standards": {
+      "design_speed_based": {
+        "30": {
+          "aadt_ranges": {
+            "<750": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 7,
+                  "max": 10
+                },
+                "5_1_or_4_1": {
+                  "min": 7,
+                  "max": 10
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 7,
+                  "max": 10
+                },
+                "4_1_or_5_1": {
+                  "min": 7,
+                  "max": 10
+                },
+                "6_1_or_flatter": {
+                  "min": 7,
+                  "max": 10
+                }
+              }
+            },
+            "750-1500": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 10,
+                  "max": 12
+                },
+                "5_1_or_4_1": {
+                  "min": 12,
+                  "max": 14
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "4_1_or_5_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "6_1_or_flatter": {
+                  "min": 10,
+                  "max": 12
+                }
+              }
+            },
+            "1500-6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 12,
+                  "max": 14
+                },
+                "5_1_or_4_1": {
+                  "min": 14,
+                  "max": 16
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 12,
+                  "max": 14
+                },
+                "4_1_or_5_1": {
+                  "min": 12,
+                  "max": 14
+                },
+                "6_1_or_flatter": {
+                  "min": 12,
+                  "max": 14
+                }
+              }
+            },
+            ">6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 14,
+                  "max": 16
+                },
+                "5_1_or_4_1": {
+                  "min": 16,
+                  "max": 18
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "4_1_or_5_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "6_1_or_flatter": {
+                  "min": 14,
+                  "max": 16
+                }
+              }
+            }
+          }
+        },
+        "40": {
+          "aadt_ranges": {
+            "<750": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 7,
+                  "max": 10
+                },
+                "5_1_or_4_1": {
+                  "min": 7,
+                  "max": 10
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 7,
+                  "max": 10
+                },
+                "4_1_or_5_1": {
+                  "min": 7,
+                  "max": 10
+                },
+                "6_1_or_flatter": {
+                  "min": 7,
+                  "max": 10
+                }
+              }
+            },
+            "750-1500": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 10,
+                  "max": 12
+                },
+                "5_1_or_4_1": {
+                  "min": 12,
+                  "max": 14
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "4_1_or_5_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "6_1_or_flatter": {
+                  "min": 10,
+                  "max": 12
+                }
+              }
+            },
+            "1500-6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 12,
+                  "max": 14
+                },
+                "5_1_or_4_1": {
+                  "min": 14,
+                  "max": 16
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 12,
+                  "max": 14
+                },
+                "4_1_or_5_1": {
+                  "min": 12,
+                  "max": 14
+                },
+                "6_1_or_flatter": {
+                  "min": 12,
+                  "max": 14
+                }
+              }
+            },
+            ">6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 14,
+                  "max": 16
+                },
+                "5_1_or_4_1": {
+                  "min": 16,
+                  "max": 18
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "4_1_or_5_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "6_1_or_flatter": {
+                  "min": 14,
+                  "max": 16
+                }
+              }
+            }
+          }
+        },
+        "45": {
+          "aadt_ranges": {
+            "<750": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 10,
+                  "max": 12
+                },
+                "5_1_or_4_1": {
+                  "min": 12,
+                  "max": 14
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 8,
+                  "max": 10
+                },
+                "4_1_or_5_1": {
+                  "min": 8,
+                  "max": 10
+                },
+                "6_1_or_flatter": {
+                  "min": 10,
+                  "max": 12
+                }
+              }
+            },
+            "750-1500": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 12,
+                  "max": 14
+                },
+                "5_1_or_4_1": {
+                  "min": 16,
+                  "max": 20
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "4_1_or_5_1": {
+                  "min": 10,
+                  "max": 14
+                },
+                "6_1_or_flatter": {
+                  "min": 14,
+                  "max": 16
+                }
+              }
+            },
+            "1500-6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 16,
+                  "max": 18
+                },
+                "5_1_or_4_1": {
+                  "min": 20,
+                  "max": 26
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 12,
+                  "max": 14
+                },
+                "4_1_or_5_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "6_1_or_flatter": {
+                  "min": 16,
+                  "max": 18
+                }
+              }
+            },
+            ">6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 18,
+                  "max": 20
+                },
+                "5_1_or_4_1": {
+                  "min": 24,
+                  "max": 28
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "4_1_or_5_1": {
+                  "min": 18,
+                  "max": 20
+                },
+                "6_1_or_flatter": {
+                  "min": 20,
+                  "max": 22
+                }
+              }
+            }
+          }
+        },
+        "50": {
+          "aadt_ranges": {
+            "<750": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 10,
+                  "max": 12
+                },
+                "5_1_or_4_1": {
+                  "min": 12,
+                  "max": 14
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 8,
+                  "max": 10
+                },
+                "4_1_or_5_1": {
+                  "min": 8,
+                  "max": 10
+                },
+                "6_1_or_flatter": {
+                  "min": 10,
+                  "max": 12
+                }
+              }
+            },
+            "750-1500": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 12,
+                  "max": 14
+                },
+                "5_1_or_4_1": {
+                  "min": 16,
+                  "max": 20
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "4_1_or_5_1": {
+                  "min": 10,
+                  "max": 14
+                },
+                "6_1_or_flatter": {
+                  "min": 14,
+                  "max": 16
+                }
+              }
+            },
+            "1500-6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 16,
+                  "max": 18
+                },
+                "5_1_or_4_1": {
+                  "min": 20,
+                  "max": 26
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 12,
+                  "max": 14
+                },
+                "4_1_or_5_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "6_1_or_flatter": {
+                  "min": 16,
+                  "max": 18
+                }
+              }
+            },
+            ">6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 18,
+                  "max": 20
+                },
+                "5_1_or_4_1": {
+                  "min": 24,
+                  "max": 28
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "4_1_or_5_1": {
+                  "min": 18,
+                  "max": 20
+                },
+                "6_1_or_flatter": {
+                  "min": 20,
+                  "max": 22
+                }
+              }
+            }
+          }
+        },
+        "55": {
+          "aadt_ranges": {
+            "<750": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 12,
+                  "max": 14
+                },
+                "5_1_or_4_1": {
+                  "min": 14,
+                  "max": 18
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 8,
+                  "max": 10
+                },
+                "4_1_or_5_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "6_1_or_flatter": {
+                  "min": 10,
+                  "max": 12
+                }
+              }
+            },
+            "750-1500": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 16,
+                  "max": 18
+                },
+                "5_1_or_4_1": {
+                  "min": 20,
+                  "max": 24
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "4_1_or_5_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "6_1_or_flatter": {
+                  "min": 16,
+                  "max": 18
+                }
+              }
+            },
+            "1500-6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 20,
+                  "max": 22
+                },
+                "5_1_or_4_1": {
+                  "min": 24,
+                  "max": 30
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 14,
+                  "max": 18
+                },
+                "4_1_or_5_1": {
+                  "min": 16,
+                  "max": 18
+                },
+                "6_1_or_flatter": {
+                  "min": 20,
+                  "max": 22
+                }
+              }
+            },
+            ">6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 22,
+                  "max": 24
+                },
+                "5_1_or_4_1": {
+                  "min": 26,
+                  "max": 32,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 16,
+                  "max": 18
+                },
+                "4_1_or_5_1": {
+                  "min": 20,
+                  "max": 22
+                },
+                "6_1_or_flatter": {
+                  "min": 22,
+                  "max": 24
+                }
+              }
+            }
+          }
+        },
+        "60": {
+          "aadt_ranges": {
+            "<750": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 16,
+                  "max": 18
+                },
+                "5_1_or_4_1": {
+                  "min": 20,
+                  "max": 24
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "4_1_or_5_1": {
+                  "min": 12,
+                  "max": 14
+                },
+                "6_1_or_flatter": {
+                  "min": 14,
+                  "max": 16
+                }
+              }
+            },
+            "750-1500": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 20,
+                  "max": 24
+                },
+                "5_1_or_4_1": {
+                  "min": 26,
+                  "max": 32,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 12,
+                  "max": 14
+                },
+                "4_1_or_5_1": {
+                  "min": 16,
+                  "max": 18
+                },
+                "6_1_or_flatter": {
+                  "min": 20,
+                  "max": 22
+                }
+              }
+            },
+            "1500-6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 26,
+                  "max": 30
+                },
+                "5_1_or_4_1": {
+                  "min": 32,
+                  "max": 40,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 14,
+                  "max": 18
+                },
+                "4_1_or_5_1": {
+                  "min": 18,
+                  "max": 22
+                },
+                "6_1_or_flatter": {
+                  "min": 24,
+                  "max": 26
+                }
+              }
+            },
+            ">6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 30,
+                  "max": 32,
+                  "asterisk": true
+                },
+                "5_1_or_4_1": {
+                  "min": 36,
+                  "max": 44,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 20,
+                  "max": 22
+                },
+                "4_1_or_5_1": {
+                  "min": 24,
+                  "max": 26
+                },
+                "6_1_or_flatter": {
+                  "min": 26,
+                  "max": 28
+                }
+              }
+            }
+          }
+        },
+        "65": {
+          "aadt_ranges": {
+            "<750": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 18,
+                  "max": 20
+                },
+                "5_1_or_4_1": {
+                  "min": 20,
+                  "max": 26
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "4_1_or_5_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "6_1_or_flatter": {
+                  "min": 14,
+                  "max": 16
+                }
+              }
+            },
+            "750-1500": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 24,
+                  "max": 26
+                },
+                "5_1_or_4_1": {
+                  "min": 28,
+                  "max": 36,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 12,
+                  "max": 16
+                },
+                "4_1_or_5_1": {
+                  "min": 18,
+                  "max": 20
+                },
+                "6_1_or_flatter": {
+                  "min": 20,
+                  "max": 22
+                }
+              }
+            },
+            "1500-6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 28,
+                  "max": 32,
+                  "asterisk": true
+                },
+                "5_1_or_4_1": {
+                  "min": 34,
+                  "max": 42,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 16,
+                  "max": 20
+                },
+                "4_1_or_5_1": {
+                  "min": 22,
+                  "max": 24
+                },
+                "6_1_or_flatter": {
+                  "min": 26,
+                  "max": 28
+                }
+              }
+            },
+            ">6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 30,
+                  "max": 34,
+                  "asterisk": true
+                },
+                "5_1_or_4_1": {
+                  "min": 38,
+                  "max": 46,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 22,
+                  "max": 24
+                },
+                "4_1_or_5_1": {
+                  "min": 26,
+                  "max": 30
+                },
+                "6_1_or_flatter": {
+                  "min": 28,
+                  "max": 30
+                }
+              }
+            }
+          }
+        },
+        "70": {
+          "aadt_ranges": {
+            "<750": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 18,
+                  "max": 20
+                },
+                "5_1_or_4_1": {
+                  "min": 20,
+                  "max": 26
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 10,
+                  "max": 12
+                },
+                "4_1_or_5_1": {
+                  "min": 14,
+                  "max": 16
+                },
+                "6_1_or_flatter": {
+                  "min": 14,
+                  "max": 16
+                }
+              }
+            },
+            "750-1500": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 24,
+                  "max": 26
+                },
+                "5_1_or_4_1": {
+                  "min": 28,
+                  "max": 36,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 12,
+                  "max": 16
+                },
+                "4_1_or_5_1": {
+                  "min": 18,
+                  "max": 20
+                },
+                "6_1_or_flatter": {
+                  "min": 20,
+                  "max": 22
+                }
+              }
+            },
+            "1500-6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 28,
+                  "max": 32,
+                  "asterisk": true
+                },
+                "5_1_or_4_1": {
+                  "min": 34,
+                  "max": 42,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 16,
+                  "max": 20
+                },
+                "4_1_or_5_1": {
+                  "min": 22,
+                  "max": 24
+                },
+                "6_1_or_flatter": {
+                  "min": 26,
+                  "max": 28
+                }
+              }
+            },
+            ">6000": {
+              "foreslopes": {
+                "6_1_or_flatter": {
+                  "min": 30,
+                  "max": 34,
+                  "asterisk": true
+                },
+                "5_1_or_4_1": {
+                  "min": 38,
+                  "max": 46,
+                  "asterisk": true
+                }
+              },
+              "backslopes": {
+                "3_1": {
+                  "min": 22,
+                  "max": 24
+                },
+                "4_1_or_5_1": {
+                  "min": 26,
+                  "max": 30
+                },
+                "6_1_or_flatter": {
+                  "min": 28,
+                  "max": 30
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "traffic_volume_ranges": {
+      "<750": "AADT < 750 vehicles per day",
+      "750-1500": "AADT 750 to less than 1500 vehicles per day",
+      "1500-6000": "AADT 1500 to 6000 vehicles per day",
+      ">6000": "AADT over 6000 vehicles per day"
+    },
+    "slope_positions": [
+      "foreslope",
+      "backslope"
+    ],
+    "foreslope_categories": {
+      "6_1_or_flatter": "6:1 or flatter",
+      "5_1_or_4_1": "5:1 or 4:1"
+    },
+    "backslope_categories": {
+      "3_1": "3:1",
+      "4_1_or_5_1": "4:1 or 5:1",
+      "6_1_or_flatter": "6:1 or flatter"
+    }
+  },
+  "geometry": {
+    "description": "Geometric design standards for horizontal and vertical alignment",
+    "horizontal_curves": {
+      "minimum_radius": {
+        "units": "feet",
+        "superelevation_max": 0.06,
+        "friction_factor": {
+          "30": 0.17,
+          "40": 0.16,
+          "50": 0.15,
+          "60": 0.14,
+          "70": 0.12,
+          "80": 0.11
+        },
+        "design_speed_radius": {
+          "30": 200,
+          "40": 360,
+          "50": 570,
+          "60": 830,
+          "70": 1150,
+          "80": 1570
+        }
+      },
+      "superelevation_transition": {
+        "description": "Length of superelevation runoff",
+        "formula": "L = (w * e_max * V) / 180",
+        "where": {
+          "L": "transition length in feet",
+          "w": "width of rotation (feet)",
+          "e_max": "maximum superelevation rate",
+          "V": "design speed (mph)"
+        }
+      }
+    },
+    "vertical_curves": {
+      "minimum_length": {
+        "description": "Minimum vertical curve length for sight distance",
+        "units": "feet",
+        "crest_curves": {
+          "K_values": {
+            "30": 19,
+            "40": 44,
+            "45": 61,
+            "50": 84,
+            "60": 151,
+            "70": 247,
+            "80": 384
+          },
+          "formula": "L = K * A",
+          "where": {
+            "L": "curve length in feet",
+            "K": "rate of vertical curvature",
+            "A": "algebraic difference in grades (percent)"
+          }
+        },
+        "sag_curves": {
+          "K_values": {
+            "30": 37,
+            "40": 64,
+            "45": 79,
+            "50": 96,
+            "60": 136,
+            "70": 181,
+            "80": 231
+          }
+        }
+      },
+      "stopping_sight_distance": {
+        "units": "feet",
+        "design_speed_ssd": {
+          "30": 200,
+          "40": 305,
+          "50": 425,
+          "60": 570,
+          "70": 730,
+          "80": 910
+        }
+      }
+    },
+    "cross_slope": {
+      "description": "Pavement cross slope for drainage",
+      "units": "percent",
+      "standards": {
+        "normal_crown": {
+          "concrete": 0.02,
+          "asphalt": 0.02
+        },
+        "superelevated": {
+          "min": 0.02,
+          "max": 0.06
+        }
+      }
+    }
+  },
+  "validation_rules": {
+    "clear_zones": {
+      "required_fields": [
+        "design_speed",
+        "adt",
+        "slope_position",
+        "slope_category"
+      ],
+      "design_speed_range": [
+        30,
+        70
+      ],
+      "valid_slope_positions": [
+        "foreslope",
+        "backslope"
+      ],
+      "valid_foreslope_categories": [
+        "6_1_or_flatter",
+        "5_1_or_4_1"
+      ],
+      "valid_backslope_categories": [
+        "3_1",
+        "4_1_or_5_1",
+        "6_1_or_flatter"
+      ]
+    },
+    "geometry": {
+      "required_fields": [
+        "design_speed"
+      ],
+      "design_speed_range": [
+        30,
+        80
+      ],
+      "grade_range": [
+        -12,
+        12
+      ]
+    }
+  }
+}

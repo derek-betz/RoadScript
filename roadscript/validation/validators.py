@@ -1,7 +1,7 @@
 """
 Validation Module
 
-Provides input validation and compliance checking for all calculations.
+Provides input validation and compliance checking for calculations.
 Ensures data integrity and IDM standard compliance.
 """
 
@@ -27,65 +27,6 @@ class InputValidator:
         """Initialize the input validator."""
         self.standards = StandardsLoader()
         self.logger = get_audit_logger()
-    
-    def validate_buffer_strip_inputs(self, inputs: Dict[str, Any]) -> Tuple[bool, List[str]]:
-        """
-        Validate inputs for buffer strip calculations.
-        
-        Args:
-            inputs: Dictionary containing input parameters
-            
-        Returns:
-            Tuple of (is_valid, list of error messages)
-        """
-        rules = self.standards.get_validation_rules().get("buffer_strips", {})
-        errors = []
-        
-        # Check required fields
-        required = rules.get("required_fields", [])
-        for field in required:
-            if field not in inputs:
-                errors.append(f"Missing required field: {field}")
-        
-        # Validate road classification
-        if "road_classification" in inputs:
-            valid_classifications = rules.get("valid_classifications", [])
-            if inputs["road_classification"] not in valid_classifications:
-                errors.append(
-                    f"Invalid road_classification: {inputs['road_classification']}. "
-                    f"Must be one of: {', '.join(valid_classifications)}"
-                )
-        
-        # Validate terrain
-        if "terrain" in inputs:
-            valid_terrains = rules.get("valid_terrains", [])
-            if inputs["terrain"] not in valid_terrains:
-                errors.append(
-                    f"Invalid terrain: {inputs['terrain']}. "
-                    f"Must be one of: {', '.join(valid_terrains)}"
-                )
-        
-        # Validate design speed
-        if "design_speed" in inputs:
-            speed_range = rules.get("design_speed_range", [0, 100])
-            speed = inputs["design_speed"]
-            if not (speed_range[0] <= speed <= speed_range[1]):
-                errors.append(
-                    f"Design speed {speed} mph is outside valid range "
-                    f"({speed_range[0]}-{speed_range[1]} mph)"
-                )
-        
-        is_valid = len(errors) == 0
-        status = "PASS" if is_valid else "FAIL"
-        
-        self.logger.log_validation(
-            "buffer_strip_inputs",
-            inputs,
-            {"errors": errors},
-            status
-        )
-        
-        return is_valid, errors
     
     def validate_clear_zone_inputs(self, inputs: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """
@@ -116,9 +57,22 @@ class InputValidator:
                     f"({speed_range[0]}-{speed_range[1]} mph)"
                 )
         
-        # Validate slope category
-        if "slope_category" in inputs:
-            valid_slopes = rules.get("valid_slope_categories", [])
+        # Validate slope position
+        if "slope_position" in inputs:
+            valid_positions = rules.get("valid_slope_positions", [])
+            if inputs["slope_position"] not in valid_positions:
+                errors.append(
+                    f"Invalid slope_position: {inputs['slope_position']}. "
+                    f"Must be one of: {', '.join(valid_positions)}"
+                )
+
+        # Validate slope category by position
+        if "slope_position" in inputs and "slope_category" in inputs:
+            position = inputs["slope_position"]
+            if position == "foreslope":
+                valid_slopes = rules.get("valid_foreslope_categories", [])
+            else:
+                valid_slopes = rules.get("valid_backslope_categories", [])
             if inputs["slope_category"] not in valid_slopes:
                 errors.append(
                     f"Invalid slope_category: {inputs['slope_category']}. "
@@ -208,88 +162,44 @@ class ComplianceChecker:
         self.standards = StandardsLoader()
         self.logger = get_audit_logger()
     
-    def check_buffer_strip_compliance(
-        self,
-        inputs: Dict[str, Any],
-        calculated_width: float
-    ) -> Tuple[bool, List[str]]:
-        """
-        Check if calculated buffer strip width meets IDM standards.
-        
-        Args:
-            inputs: Input parameters used in calculation
-            calculated_width: Calculated buffer strip width
-            
-        Returns:
-            Tuple of (is_compliant, list of warnings/issues)
-        """
-        issues = []
-        buffer_standards = self.standards.get_buffer_strip_standards()
-        
-        classification = inputs.get("road_classification")
-        if classification:
-            class_standards = buffer_standards.get("standards", {}).get(classification, {})
-            min_width = class_standards.get("min_width", 0)
-            max_width = class_standards.get("max_width", 999)
-            
-            if calculated_width < min_width:
-                issues.append(
-                    f"Calculated width {calculated_width} ft is below minimum "
-                    f"standard of {min_width} ft for {classification}"
-                )
-            
-            if calculated_width > max_width:
-                issues.append(
-                    f"Calculated width {calculated_width} ft exceeds maximum "
-                    f"standard of {max_width} ft for {classification}"
-                )
-        
-        is_compliant = len(issues) == 0
-        status = "PASS" if is_compliant else "WARNING"
-        
-        self.logger.log_validation(
-            "buffer_strip_compliance",
-            {"inputs": inputs, "calculated_width": calculated_width},
-            {"issues": issues},
-            status
-        )
-        
-        return is_compliant, issues
-    
     def check_clear_zone_compliance(
         self,
         inputs: Dict[str, Any],
-        calculated_width: float
+        width_range: Dict[str, Any]
     ) -> Tuple[bool, List[str]]:
         """
-        Check if calculated clear zone width meets IDM standards.
+        Check if clear zone width range is structurally valid.
         
         Args:
             inputs: Input parameters used in calculation
-            calculated_width: Calculated clear zone width
+            width_range: Clear zone width range data (min/max)
             
         Returns:
             Tuple of (is_compliant, list of warnings/issues)
         """
         issues = []
         
-        # Clear zones should always be positive
-        if calculated_width <= 0:
-            issues.append(f"Clear zone width must be positive, got: {calculated_width} ft")
-        
-        # Typical minimum clear zone is 7 feet
-        if calculated_width < 7:
-            issues.append(
-                f"Calculated clear zone {calculated_width} ft is below "
-                f"typical minimum of 7 ft"
-            )
+        min_width = width_range.get("min")
+        max_width = width_range.get("max")
+
+        if min_width is None or max_width is None:
+            issues.append("Clear zone width range must include min and max values.")
+        else:
+            if min_width <= 0 or max_width <= 0:
+                issues.append(
+                    f"Clear zone range must be positive, got min={min_width}, max={max_width}."
+                )
+            if min_width > max_width:
+                issues.append(
+                    f"Clear zone range min exceeds max, got min={min_width}, max={max_width}."
+                )
         
         is_compliant = len(issues) == 0
         status = "PASS" if is_compliant else "WARNING"
         
         self.logger.log_validation(
             "clear_zone_compliance",
-            {"inputs": inputs, "calculated_width": calculated_width},
+            {"inputs": inputs, "width_range": width_range},
             {"issues": issues},
             status
         )

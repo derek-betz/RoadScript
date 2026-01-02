@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
-RoadScript is a professional-grade Python engine that centralizes IDM (Indiana Design Manual) compliant mathematics for roadway design. It provides a modular, testable, and legally defensible framework for buffer strips, clear zones, and geometric design calculations.
+RoadScript is a professional-grade Python engine that centralizes IDM (Indiana Design Manual) compliant mathematics for roadway design. It provides a modular, testable, and legally defensible framework for clear zones and geometric design calculations.
 
 ## 🎯 Purpose
 
@@ -21,22 +21,28 @@ This repository serves as the **Deterministic Engineering Core** for INDOT roadw
 
 ### Core Components
 
-1. **Standards Module** (`roadscript/standards/`)
+1. **Data Layer** (`roadscript/data/`)
    - `idm_standards.json`: Authoritative JSON-based standards database
+
+2. **Standards Module** (`roadscript/standards/`)
    - `loader.py`: Singleton loader for standards access
 
-2. **Core Calculators** (`roadscript/core/`)
-   - `buffer_strips.py`: Buffer strip width calculations
+3. **Core Calculators** (`roadscript/core/`)
    - `clear_zones.py`: Clear zone width calculations
    - `geometry.py`: Geometric design parameters (curves, sight distance)
+   - `engine.py`: Pure functions for core IDM math
 
-3. **Validation Layer** (`roadscript/validation/`)
+4. **Validation Layer** (`roadscript/validation/`)
    - `validators.py`: Input validation and compliance checking
    - Pre-calculation input validation
    - Post-calculation compliance verification
 
-4. **Audit Logging** (`roadscript/logging/`)
+5. **Validators** (`roadscript/validators/`)
+   - `base.py`: ValidationResult and IDM 43-4.0 vertical curve checks
+
+6. **Audit Logging** (`roadscript/logging/`, `roadscript/utils/`)
    - `audit.py`: Structured logging for all calculations
+   - `utils/audit.py`: Validation audit log with revision tags
    - JSON-formatted audit trails
    - Legal defensibility and traceability
 
@@ -56,25 +62,6 @@ pip install -r requirements.txt
 
 ## 🚀 Quick Start
 
-### Buffer Strip Calculation
-
-```python
-from roadscript import BufferStripCalculator
-
-calculator = BufferStripCalculator()
-
-result = calculator.calculate(
-    road_classification="interstate",
-    design_speed=65,
-    terrain="rolling",
-    traffic_volume="high"
-)
-
-print(f"Buffer Strip Width: {result['width']} feet")
-print(f"Compliant: {result['compliant']}")
-print(f"Standards Version: {result['standards_version']}")
-```
-
 ### Clear Zone Calculation
 
 ```python
@@ -85,10 +72,11 @@ calculator = ClearZoneCalculator()
 result = calculator.calculate(
     design_speed=60,
     adt=5000,
-    slope_category="fill_slope_6_1_or_flatter"
+    slope_position="foreslope",
+    slope_category="6_1_or_flatter"
 )
 
-print(f"Clear Zone Width: {result['width']} feet")
+print(f"Clear Zone Range: {result['min_width']}-{result['max_width']} feet")
 print(f"ADT Category: {result['adt_category']}")
 print(f"Compliant: {result['compliant']}")
 ```
@@ -160,19 +148,13 @@ pytest -m compliance
 
 ## 📊 Standards Database
 
-The `idm_standards.json` file serves as the single source of truth for all calculations. It includes:
-
-### Buffer Strips
-- Road classifications (Interstate, US Route, State Highway, Local Road)
-- Design speed-based widths
-- Terrain adjustment factors (flat, rolling, mountainous)
-- Traffic volume adjustment factors (low, medium, high)
+The `roadscript/data/idm_standards.json` file serves as the single source of truth for all calculations. It includes:
 
 ### Clear Zones
 - Design speed-based requirements (30-70 mph)
 - ADT (Average Daily Traffic) categories
-- Slope category specifications
-- AASHTO Roadside Design Guide compliance
+- Foreslope and backslope category specifications
+- IDM Figure 49-2A compliance
 
 ### Geometry
 - Horizontal curve minimum radius
@@ -189,6 +171,7 @@ Every calculation includes:
    - Range validation
    - Type checking
    - IDM conformance
+   - Missing design speeds raise `StandardInterpolationRequiredError`
 
 2. **Post-calculation Compliance Checking**
    - Minimum/maximum standard verification
@@ -200,6 +183,7 @@ Every calculation includes:
    - Input parameters logged
    - Output results logged
    - Standards version tracking
+   - Validation results logged to `roadscript_audit.log` with revision tags
 
 ## 📝 Audit Logging
 
@@ -208,21 +192,25 @@ All calculations are automatically logged with:
 ```json
 {
   "timestamp": "2024-01-01T12:00:00.000000",
-  "calculation_type": "buffer_strip",
+  "calculation_type": "clear_zone",
   "status": "SUCCESS",
   "standards_version": "2024.1",
   "inputs": {
-    "road_classification": "interstate",
-    "design_speed": 65,
-    "terrain": "rolling"
+    "design_speed": 60,
+    "adt": 5000,
+    "slope_position": "foreslope",
+    "slope_category": "6_1_or_flatter"
   },
   "outputs": {
-    "width": 46.0,
+    "min_width": 26,
+    "max_width": 30,
     "compliant": true,
     "warnings": []
   }
 }
 ```
+
+Validation results (for example, IDM 43-4.0 vertical curve checks) are appended to `roadscript_audit.log` with a timestamp and revision tag.
 
 ## 🔒 Legal Defensibility
 

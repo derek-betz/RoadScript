@@ -34,12 +34,14 @@ class StandardsLoader:
             self._load_standards()
     
     def _load_standards(self) -> None:
-        """Load standards from the JSON file."""
-        standards_path = Path(__file__).parent / "idm_standards.json"
-        
+        """Load standards from the JSON file in the data layer."""
+        data_path = Path(__file__).resolve().parents[1] / "data" / "idm_standards.json"
+        legacy_path = Path(__file__).parent / "idm_standards.json"
+        standards_path = data_path if data_path.exists() else legacy_path
+
         if not standards_path.exists():
             raise FileNotFoundError(
-                f"IDM standards file not found at {standards_path}. "
+                f"IDM standards file not found at {data_path}. "
                 "This file is required for the system to operate."
             )
         
@@ -62,15 +64,6 @@ class StandardsLoader:
         if self._standards is None:
             self._load_standards()
         return self._standards
-    
-    def get_buffer_strip_standards(self) -> Dict[str, Any]:
-        """
-        Get buffer strip standards.
-        
-        Returns:
-            Dict containing buffer strip standards
-        """
-        return self.get_standards().get("buffer_strips", {})
     
     def get_clear_zone_standards(self) -> Dict[str, Any]:
         """
