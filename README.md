@@ -262,3 +262,8 @@ Future enhancements may include:
 ---
 
 **Note**: This is a deterministic engineering tool. All calculations should be reviewed by a licensed professional engineer before use in production designs.
+
+## Secrets
+
+The API_KEY/ directory is intentionally excluded from version control. Create it locally on each machine to store secrets.
+
