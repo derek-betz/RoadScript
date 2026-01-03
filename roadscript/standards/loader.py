@@ -35,9 +35,15 @@ class StandardsLoader:
     
     def _load_standards(self) -> None:
         """Load standards from the JSON file in the data layer."""
-        data_path = Path(__file__).resolve().parents[1] / "data" / "idm_standards.json"
+        data_root = Path(__file__).resolve().parents[1] / "data"
+        structured_path = data_root / "structured" / "idm_standards.json"
+        data_path = data_root / "idm_standards.json"
         legacy_path = Path(__file__).parent / "idm_standards.json"
-        standards_path = data_path if data_path.exists() else legacy_path
+        use_structured = os.getenv("ROADSCRIPT_STRUCTURED_ENABLED", "false").lower() == "true"
+        if use_structured and structured_path.exists():
+            standards_path = structured_path
+        else:
+            standards_path = data_path if data_path.exists() else legacy_path
 
         if not standards_path.exists():
             raise FileNotFoundError(

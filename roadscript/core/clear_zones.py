@@ -5,11 +5,11 @@ Calculates clear zone widths based on IDM standards for design speed,
 traffic volume (ADT), and roadside slope characteristics.
 """
 
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from roadscript.standards.loader import StandardsLoader
+from roadscript.standards.service import StandardsService
 from roadscript.validation.validators import InputValidator, ComplianceChecker
 from roadscript.logging.audit import get_audit_logger
-from roadscript.exceptions import StandardInterpolationRequiredError
 
 
 class ClearZoneCalculator:
@@ -20,9 +20,10 @@ class ClearZoneCalculator:
     traveled way for recovery of errant vehicles.
     """
     
-    def __init__(self):
+    def __init__(self, standards_service: Optional[StandardsService] = None):
         """Initialize the clear zone calculator."""
         self.standards = StandardsLoader()
+        self.standards_service = standards_service or StandardsService()
         self.validator = InputValidator()
         self.compliance = ComplianceChecker()
         self.logger = get_audit_logger()
@@ -103,29 +104,17 @@ class ClearZoneCalculator:
             )
             raise ValueError(f"Input validation failed: {error_msg}")
         
-        # Get standards
-        clear_zone_standards = self.standards.get_clear_zone_standards()
-        speed_based = clear_zone_standards["standards"]["design_speed_based"]
-        
         # Determine ADT category
         adt_category = self._get_adt_category(adt)
-        
-        # Get clear zone width from standards
-        speed_key = str(design_speed)
-        if speed_key not in speed_based:
-            available_speeds: List[int] = sorted(int(speed) for speed in speed_based.keys())
-            raise StandardInterpolationRequiredError(
-                "Design speed "
-                f"{design_speed} mph not found in IDM 49-2.02 table. "
-                f"Available speeds: {available_speeds}"
-            )
-        
-        speed_data = speed_based.get(speed_key, {})
-        aadt_ranges = speed_data.get("aadt_ranges", {})
-        aadt_data = aadt_ranges.get(adt_category, {})
-        slope_key = "foreslopes" if slope_position == "foreslope" else "backslopes"
-        slope_data = aadt_data.get(slope_key, {})
-        width_range = slope_data.get(slope_category)
+
+        # Get clear zone width from standards (structured + optional RAG verification)
+        standard_value = self.standards_service.get_clear_zone_width(
+            design_speed=design_speed,
+            adt=adt,
+            slope_position=slope_position,
+            slope_category=slope_category,
+        )
+        width_range = standard_value.value
 
         if width_range is None:
             raise ValueError(
@@ -141,6 +130,7 @@ class ClearZoneCalculator:
         )
         
         # Prepare results
+        speed_key = str(design_speed)
         results = {
             "min_width": width_range.get("min"),
             "max_width": width_range.get("max"),
@@ -153,7 +143,13 @@ class ClearZoneCalculator:
             "compliant": is_compliant,
             "warnings": warnings,
             "units": "feet",
-            "standards_version": self.standards.get_metadata().get("version")
+            "standards_version": self.standards.get_metadata().get("version"),
+            "verification": {
+                "verified": standard_value.verified,
+                "source": standard_value.source,
+                "details": standard_value.verification,
+                "citation": standard_value.citation,
+            },
         }
         
         # Log calculation

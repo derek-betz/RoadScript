@@ -5,11 +5,11 @@ Calculates geometric design parameters including minimum horizontal curve radius
 vertical curve length, stopping sight distance, and superelevation.
 """
 
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from roadscript.standards.loader import StandardsLoader
+from roadscript.standards.service import StandardsService
 from roadscript.validation.validators import InputValidator, ComplianceChecker
 from roadscript.logging.audit import get_audit_logger
-from roadscript.exceptions import StandardInterpolationRequiredError
 
 
 class GeometryCalculator:
@@ -20,9 +20,10 @@ class GeometryCalculator:
     stopping sight distance, and other geometric elements.
     """
     
-    def __init__(self):
+    def __init__(self, standards_service: Optional[StandardsService] = None):
         """Initialize the geometry calculator."""
         self.standards = StandardsLoader()
+        self.standards_service = standards_service or StandardsService()
         self.validator = InputValidator()
         self.compliance = ComplianceChecker()
         self.logger = get_audit_logger()
@@ -71,22 +72,12 @@ class GeometryCalculator:
         # Get standards
         geom_standards = self.standards.get_geometry_standards()
         curve_standards = geom_standards["horizontal_curves"]["minimum_radius"]
-        
-        # Get parameters
-        speed_key = str(design_speed)
-        radius_table = curve_standards["design_speed_radius"]
-        
-        # Find radius (exact match required)
-        if speed_key not in radius_table:
-            available_speeds: List[int] = sorted(int(speed) for speed in radius_table.keys())
-            raise StandardInterpolationRequiredError(
-                "Design speed "
-                f"{design_speed} mph not found in IDM geometry standards. "
-                f"Available speeds: {available_speeds}"
-            )
-        
-        minimum_radius = radius_table[speed_key]
+
+        # Resolve minimum radius (structured + optional RAG verification)
+        standard_value = self.standards_service.get_minimum_radius(design_speed)
+        minimum_radius = standard_value.value
         e_max = curve_standards["superelevation_max"]
+        speed_key = str(design_speed)
         friction_factors = curve_standards["friction_factor"]
         friction_factor = friction_factors.get(speed_key, 0.12)
         
@@ -107,7 +98,13 @@ class GeometryCalculator:
             "compliant": is_compliant,
             "warnings": warnings,
             "units": "feet",
-            "standards_version": self.standards.get_metadata().get("version")
+            "standards_version": self.standards.get_metadata().get("version"),
+            "verification": {
+                "verified": standard_value.verified,
+                "source": standard_value.source,
+                "details": standard_value.verification,
+                "citation": standard_value.citation,
+            },
         }
         
         # Log calculation
@@ -168,27 +165,10 @@ class GeometryCalculator:
             )
             raise ValueError(f"Input validation failed: {error_msg}")
         
-        # Get standards
-        geom_standards = self.standards.get_geometry_standards()
-        vert_curve_standards = geom_standards["vertical_curves"]["minimum_length"]
-        
-        # Get K value
+        # Resolve K value (structured + optional RAG verification)
+        standard_value = self.standards_service.get_vertical_curve_k(design_speed, curve_type)
+        k_value = standard_value.value
         speed_key = str(design_speed)
-        if curve_type == "crest":
-            k_values = vert_curve_standards["crest_curves"]["K_values"]
-        else:
-            k_values = vert_curve_standards["sag_curves"]["K_values"]
-        
-        # Find K value (exact match required)
-        if speed_key not in k_values:
-            available_speeds: List[int] = sorted(int(speed) for speed in k_values.keys())
-            raise StandardInterpolationRequiredError(
-                "Design speed "
-                f"{design_speed} mph not found in IDM 43-4.0 K-values. "
-                f"Available speeds: {available_speeds}"
-            )
-        
-        k_value = k_values[speed_key]
         
         # Calculate curve length: L = K * A
         curve_length = k_value * abs(grade_difference)
@@ -212,7 +192,13 @@ class GeometryCalculator:
             "compliant": is_compliant,
             "warnings": warnings,
             "units": "feet",
-            "standards_version": self.standards.get_metadata().get("version")
+            "standards_version": self.standards.get_metadata().get("version"),
+            "verification": {
+                "verified": standard_value.verified,
+                "source": standard_value.source,
+                "details": standard_value.verification,
+                "citation": standard_value.citation,
+            },
         }
         
         # Log calculation
@@ -259,21 +245,10 @@ class GeometryCalculator:
             )
             raise ValueError(f"Input validation failed: {error_msg}")
         
-        # Get standards
-        geom_standards = self.standards.get_geometry_standards()
-        ssd_table = geom_standards["vertical_curves"]["stopping_sight_distance"]["design_speed_ssd"]
-        
-        # Get SSD
+        # Resolve SSD (structured + optional RAG verification)
+        standard_value = self.standards_service.get_stopping_sight_distance(design_speed)
+        ssd = standard_value.value
         speed_key = str(design_speed)
-        if speed_key not in ssd_table:
-            available_speeds: List[int] = sorted(int(speed) for speed in ssd_table.keys())
-            raise StandardInterpolationRequiredError(
-                "Design speed "
-                f"{design_speed} mph not found in IDM SSD standards. "
-                f"Available speeds: {available_speeds}"
-            )
-        
-        ssd = ssd_table[speed_key]
         
         # Prepare results
         calculated_values = {"stopping_sight_distance": ssd}
@@ -290,7 +265,13 @@ class GeometryCalculator:
             "compliant": is_compliant,
             "warnings": warnings,
             "units": "feet",
-            "standards_version": self.standards.get_metadata().get("version")
+            "standards_version": self.standards.get_metadata().get("version"),
+            "verification": {
+                "verified": standard_value.verified,
+                "source": standard_value.source,
+                "details": standard_value.verification,
+                "citation": standard_value.citation,
+            },
         }
         
         # Log calculation

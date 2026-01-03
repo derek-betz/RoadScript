@@ -32,6 +32,7 @@ venv/
 ENV/
 env/
 .venv
+.venv-chroma/
 
 # IDEs
 .vscode/
@@ -53,3 +54,12 @@ tmp/
 temp/
 *.tmp
 API_KEY/
+
+# INDOT ingestion artifacts
+roadscript/data/indot_pdfs/**/*.pdf
+roadscript/data/indot_pdfs/**/*.PDF
+roadscript/data/parsed_text/**
+roadscript/data/vector_index/**
+!roadscript/data/indot_pdfs/.gitkeep
+!roadscript/data/parsed_text/.gitkeep
+!roadscript/data/vector_index/.gitkeep

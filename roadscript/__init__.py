@@ -16,6 +16,7 @@ from roadscript.core.geometry import GeometryCalculator
 from roadscript.exceptions import StandardInterpolationRequiredError
 from roadscript.validation.validators import InputValidator, ComplianceChecker
 from roadscript.standards.loader import StandardsLoader
+from roadscript.standards.service import StandardsService
 from roadscript.validators.base import ValidationResult, validate_vertical_curve_k
 
 __all__ = [
@@ -27,6 +28,7 @@ __all__ = [
     "InputValidator",
     "ComplianceChecker",
     "StandardsLoader",
+    "StandardsService",
     "ValidationResult",
     "validate_vertical_curve_k",
 ]

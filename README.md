@@ -128,8 +128,9 @@ python -m roadscript.ingestion.fetch_indot_docs
 python -m roadscript.ingestion.parse_documents --rebuild-index
 ```
 
-Parsed standards are written to `roadscript/data/structured/idm_standards.json` and
-take precedence over the legacy JSON when present.
+Parsed standards are written to `roadscript/data/structured/idm_standards.json`.
+Set `ROADSCRIPT_STRUCTURED_ENABLED=true` to prioritize the ingested standards
+over the legacy JSON.
 
 ### Check for Updates
 
@@ -142,6 +143,7 @@ python -m roadscript.ingestion.check_updates
 ```bash
 # Optional: enable retrieval + verification against the vector index
 setx ROADSCRIPT_RAG_ENABLED true
+setx ROADSCRIPT_STRUCTURED_ENABLED true
 setx OPENAI_API_KEY "your-key"
 # Optional: force local embeddings even when OpenAI is configured
 setx ROADSCRIPT_EMBEDDING_PROVIDER sentence-transformer
