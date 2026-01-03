@@ -25,11 +25,22 @@ setup(
         "Programming Language :: Python :: 3.11",
     ],
     python_requires=">=3.8",
-    install_requires=[],
+    install_requires=[
+        "beautifulsoup4==4.12.3",
+        "pymupdf==1.23.26",
+        "requests==2.32.3",
+    ],
     extras_require={
+        "rag": [
+            "chromadb==0.4.24",
+            "httpx==0.27.2",
+            "numpy==1.26.4",
+            "openai==1.40.0",
+            "sentence-transformers==2.7.0",
+        ],
         "dev": [
-            "pytest>=7.4.0",
-            "pytest-cov>=4.1.0",
+            "pytest==7.4.4",
+            "pytest-cov==4.1.0",
         ],
     },
     include_package_data=True,

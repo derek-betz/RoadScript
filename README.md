@@ -23,6 +23,10 @@ This repository serves as the **Deterministic Engineering Core** for INDOT roadw
 
 1. **Data Layer** (`roadscript/data/`)
    - `idm_standards.json`: Authoritative JSON-based standards database
+   - `structured/`: Parsed standards tables and ingestion metadata
+   - `indot_pdfs/`: Raw downloaded PDFs (ignored by git)
+   - `parsed_text/`: Extracted text for verification/debugging
+   - `vector_index/`: Persistent vector index (ignored by git)
 
 2. **Standards Module** (`roadscript/standards/`)
    - `loader.py`: Singleton loader for standards access
@@ -45,6 +49,16 @@ This repository serves as the **Deterministic Engineering Core** for INDOT roadw
    - `utils/audit.py`: Validation audit log with revision tags
    - JSON-formatted audit trails
    - Legal defensibility and traceability
+
+7. **Ingestion Pipeline** (`roadscript/ingestion/`)
+   - `fetch_indot_docs.py`: Scrape and download INDOT PDFs
+   - `parse_documents.py`: Extract text, build structured tables, index vectors
+   - `check_updates.py`: Detect updates and trigger re-ingestion
+
+8. **AI Retrieval** (`roadscript/ai/`)
+   - `vector_index.py`: Chroma-backed vector index
+   - `query_engine.py`: Retrieval + extraction + caching
+   - `embeddings.py`: Embedding configuration helpers
 
 ## 📦 Installation
 
@@ -104,6 +118,40 @@ print(f"Curve Length: {curve_result['curve_length']} feet")
 ssd_result = calculator.calculate_stopping_sight_distance(design_speed=60)
 print(f"Stopping Sight Distance: {ssd_result['stopping_sight_distance']} feet")
 ```
+
+## INDOT Ingestion and RAG
+
+### Fetch and Parse INDOT Documents
+
+```bash
+python -m roadscript.ingestion.fetch_indot_docs
+python -m roadscript.ingestion.parse_documents --rebuild-index
+```
+
+Parsed standards are written to `roadscript/data/structured/idm_standards.json` and
+take precedence over the legacy JSON when present.
+
+### Check for Updates
+
+```bash
+python -m roadscript.ingestion.check_updates
+```
+
+### Enable RAG Verification
+
+```bash
+# Optional: enable retrieval + verification against the vector index
+setx ROADSCRIPT_RAG_ENABLED true
+setx OPENAI_API_KEY "your-key"
+# Optional: force local embeddings even when OpenAI is configured
+setx ROADSCRIPT_EMBEDDING_PROVIDER sentence-transformer
+# Optional: reduce OpenAI embedding batch size if you hit token limits
+setx OPENAI_EMBEDDING_BATCH_SIZE 100
+```
+
+Note: On Windows with Python 3.12, Chroma's HNSW dependency may require build tools.
+Use Python 3.11 for vector indexing (for example, `py -3.11 -m venv .venv-chroma`)
+or install the MSVC build tools if you prefer Python 3.12.
 
 ## 🧪 Testing
 
