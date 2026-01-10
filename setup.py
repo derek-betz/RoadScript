@@ -27,8 +27,11 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         "beautifulsoup4==4.12.3",
+        "fastapi==0.115.6",
         "pymupdf==1.23.26",
+        "python-dotenv==1.0.1",
         "requests==2.32.3",
+        "uvicorn[standard]==0.30.6",
     ],
     extras_require={
         "rag": [

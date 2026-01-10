@@ -33,6 +33,7 @@ ENV/
 env/
 .venv
 .venv-chroma/
+.env
 
 # IDEs
 .vscode/
@@ -60,6 +61,8 @@ roadscript/data/indot_pdfs/**/*.pdf
 roadscript/data/indot_pdfs/**/*.PDF
 roadscript/data/parsed_text/**
 roadscript/data/vector_index/**
+roadscript/data/knowledge/**
+data/knowledge/**
 !roadscript/data/indot_pdfs/.gitkeep
 !roadscript/data/parsed_text/.gitkeep
 !roadscript/data/vector_index/.gitkeep

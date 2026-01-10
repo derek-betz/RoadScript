@@ -119,6 +119,21 @@ ssd_result = calculator.calculate_stopping_sight_distance(design_speed=60)
 print(f"Stopping Sight Distance: {ssd_result['stopping_sight_distance']} feet")
 ```
 
+## RoadScript API (Optional)
+
+Run the local API server:
+
+```powershell
+scripts\run_api.ps1 -Port 9001
+```
+
+Key endpoints:
+- `GET /health`
+- `POST /calc/clear-zone`
+- `POST /calc/geometry/minimum-radius`
+- `POST /calc/geometry/vertical-curve`
+- `POST /knowledge/ingest`
+
 ## INDOT Ingestion and RAG
 
 ### Fetch and Parse INDOT Documents
